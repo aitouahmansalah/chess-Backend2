@@ -20,7 +20,22 @@ export const profileSelect = {
 export class UserService {
   constructor(private db: DatabaseService,private jwt: JwtService) {}
 
-  async getUserById(token:string){
+  async getUserById(id:string){
+    const user = await this.db.user.findUnique({
+      where:{
+        id
+    }});
+
+    if(!user){
+      throw new NotFoundException('The user you are looking for does not exist')
+    }
+
+    delete user.hash;
+    return user;
+
+  }
+
+  async getUserByToken(token:string){
     const jwt = this.jwt.decode(token) as { sub: string, email : string };
     const id = jwt.sub;
     

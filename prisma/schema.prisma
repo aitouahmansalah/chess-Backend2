@@ -29,6 +29,9 @@ model User {
   following User[] @relation("user_follows")
   followers User[] @relation("user_follows")
 
+  gamesAs1 Game[] @relation("User1GameStates")
+  gamesAs2 Game[] @relation("User2GameStates")
+
   @@map("users")
 }
 
@@ -62,4 +65,24 @@ model Comment {
   authorId String
 
   @@map("comments")
+}
+
+model Game {
+  id         Int    @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  winner      User   @relation("User1GameStates", fields: [winnerId], references: [id])
+  winnerId    String
+  loser      User   @relation("User2GameStates", fields: [loserId], references: [id])
+  loserId    String
+
+  moves Int
+
+  gameState Json
+
+
+  @@map("games")
+
+ 
 }

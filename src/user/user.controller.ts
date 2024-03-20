@@ -23,8 +23,15 @@ export class UserController {
   getUserBytoken(
     @Param('token') token: string,
   ) {
-    return this.user.getUserById(token);
+    return this.user.getUserByToken(token);
   }
+
+  // @Get('id/:id')
+  // getUserById(
+  //   @Param('id') id: string,
+  // ) {
+  //   return this.user.getUserById(id);
+  // }
 
   @Get(':username')
   getUserAndStuff(
