@@ -5,14 +5,18 @@ import {
   Get,
   Param,
   Patch,
+  Post,
   Query,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common'
 import { ParsedUrlQuery } from 'querystring'
 import { JwtGuard } from 'src/auth/guards'
 import { GetUser } from 'src/user/decorators'
 import { UpdateUserDto } from './dto'
 import { UserService } from './user.service'
+import { FileInterceptor } from '@nestjs/platform-express'
 
 @Controller('users')
 export class UserController {
@@ -26,12 +30,18 @@ export class UserController {
     return this.user.getUserByToken(token);
   }
 
-  // @Get('id/:id')
-  // getUserById(
-  //   @Param('id') id: string,
-  // ) {
-  //   return this.user.getUserById(id);
-  // }
+  @Get('id/:id')
+  getUserById(
+    @Param('id') id: string,
+  ) {
+    return this.user.getUserById(id);
+  }
+
+  @Post(':id/avatar')
+  @UseInterceptors(FileInterceptor('image')) 
+  async uploadAvatar(@UploadedFile() file, @Param('id') userId: string) {
+    return this.user.uploadAvatar(userId, file);
+  }
 
   @Get(':username')
   getUserAndStuff(

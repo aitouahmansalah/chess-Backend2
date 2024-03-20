@@ -18,6 +18,7 @@ export const profileSelect = {
 
 @Injectable()
 export class UserService {
+  
   constructor(private db: DatabaseService,private jwt: JwtService) {}
 
   async getUserById(id:string){
@@ -111,11 +112,8 @@ export class UserService {
   async deleteUser(userId: string) {
     try {
       const [, { username }] = await this.db.$transaction([
-        // delete posts associated with the user
-        // comments associated with the posts are also deleted cascadely
+       
         this.db.post.deleteMany({ where: { authorId: userId } }),
-        // actually delete the user
-        // comments associated with the user are also deleted cascadely
         this.db.user.delete({ where: { id: userId } }),
       ])
 
@@ -146,8 +144,7 @@ export class UserService {
         )
       }
 
-      // if the user already being followed
-      // unfollow the user
+    
       if (user.following.some(f => f.username === targetUsername)) {
         await this.db.user.update({
           where: { id: userId },
@@ -180,6 +177,32 @@ export class UserService {
       }
     } catch (error) {
       throw new InternalServerErrorException('Something went wrong')
+    }
+  }
+
+  async uploadAvatar(userId: string, file: Express.Multer.File) {
+    try {
+      
+      const user = await this.db.user.findUnique({
+        where: { id: userId },
+      });
+
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      const updatedUser = await this.db.user.update({
+        where: { id: userId },
+        data: {
+          image: file.path, 
+        },
+      });
+      delete updatedUser.hash
+      return updatedUser;
+    } catch (error) {
+      console.log(error)
+      throw new InternalServerErrorException(error);
+      
     }
   }
 }

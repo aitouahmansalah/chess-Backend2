@@ -6,6 +6,11 @@ import { UserModule } from './user/user.module'
 import { PostModule } from './post/post.module';
 import { CommentModule } from './comment/comment.module';
 import { GameModule } from './games/game.module'
+import { FileInterceptor, MulterModule } from '@nestjs/platform-express'
+import { multerConfig } from './multer.config'
+import { APP_INTERCEPTOR } from '@nestjs/core'
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 
 
@@ -17,9 +22,17 @@ import { GameModule } from './games/game.module'
     UserModule,
     PostModule,
     CommentModule,
-    GameModule
+    GameModule,
+    MulterModule.register(multerConfig),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '../', 'uploads'), 
+      serveRoot: '/uploads', 
+    }),
   ],
-  providers: [],
+  providers: [{
+    provide: APP_INTERCEPTOR,
+      useClass: FileInterceptor('image')},
+  ],
   controllers: [],
 })
 export class AppModule {}
