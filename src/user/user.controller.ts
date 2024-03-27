@@ -68,10 +68,10 @@ export class UserController {
     return this.user.deleteUser(userId)
   }
 
-  @UseGuards(JwtGuard)
+ // @UseGuards(JwtGuard)
   @Patch(':username/follow')
   followOrUnfollowUser(
-    @GetUser('id') userId: string,
+    @Body('id') userId: string,
     @Param('username') targetUsername: string,
   ) {
     return this.user.followOrUnfollowUser(userId, targetUsername)
