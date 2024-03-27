@@ -1,11 +1,8 @@
 ## Description
 
-A simple social media API built with Nest.js, Prisma, & PostgreSQL.
+A simple chess API built with Nest.js, Prisma, & PostgreSQL.
 
-## TODO
-- Tests
-- <s>Add new features (post, comment)</s>
-- etc...
+
 
 ## Installation
 
